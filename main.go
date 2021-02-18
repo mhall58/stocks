@@ -4,9 +4,7 @@ import (
 	"context"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/bwmarrin/discordgo"
-	"github.com/joho/godotenv"
 	"github.com/piquette/finance-go/quote"
-	"log"
 	"os"
 )
 
@@ -14,10 +12,10 @@ type Request struct {
 }
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	//err := godotenv.Load()
+	//if err != nil {
+	//	log.Fatal("Error loading .env file")
+	//}
 	//tips, _ := getStockTips()
 	//fmt.Println(tips)
 	lambda.Start(HandleRequest)
@@ -51,7 +49,7 @@ func getStockTips() (string, error) {
 		}
 	}
 
-	report := results.sortByPGrowth().asString(10)
+	report := results.sortByPGrowth().asString(20)
 
 	return report, nil
 }
