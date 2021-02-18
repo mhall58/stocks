@@ -7,18 +7,16 @@ import (
 )
 
 type Result struct {
-	quote              *finance.Quote
-	pGrowth            float64
-	suggestedSellHighPrice float64
-	suggestedSellLowPrice float64
+	quote     *finance.Quote
+	pGrowth   float64
+	sellPrice float64
 }
 
 func (r Result) New(quote *finance.Quote) Result {
 	x := Result{
-		quote:              quote,
-		pGrowth:            r.getPotentialGrowth(quote),
-		suggestedSellHighPrice: r.getSuggestedSellHighPrice(quote),
-		suggestedSellLowPrice: r.getSuggestedSellLowPrice(quote),
+		quote:     quote,
+		pGrowth:   r.getPotentialGrowth(quote),
+		sellPrice: r.getSellPrice(quote),
 	}
 
 	return x
@@ -28,22 +26,17 @@ func (r Result) getPotentialGrowth(quote *finance.Quote) float64 {
 	return (quote.FiftyTwoWeekHigh - quote.RegularMarketPrice) / quote.FiftyTwoWeekHigh
 }
 
-func (r Result) getSuggestedSellHighPrice(quote *finance.Quote) float64 {
-	return (quote.RegularMarketPrice * (1 + r.getPotentialGrowth(quote)))
-}
-
-func (r Result) getSuggestedSellLowPrice(quote *finance.Quote) float64 {
-	return (quote.RegularMarketPrice + r.getSuggestedSellHighPrice(quote) ) /2
+func (r Result) getSellPrice(quote *finance.Quote) float64 {
+	return (quote.FiftyTwoWeekHigh + quote.RegularMarketPrice) / 2
 }
 
 func (r Result) asString() string {
 	return fmt.Sprintf(
-		"Buy %s at $%.2f per share and limit sell it between $%.2f and $%.2f \n",
+		"Buy %s at $%.2f per share and limit sell it for $%.2f \n",
 		r.quote.Symbol,
 		r.quote.RegularMarketPrice,
-		r.suggestedSellLowPrice,
-		r.suggestedSellHighPrice,
-		)
+		r.sellPrice,
+	)
 }
 
 type Results []Result

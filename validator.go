@@ -9,15 +9,15 @@ type Validator struct {
 }
 
 func (v Validator) isValid(quote *finance.Quote) bool {
-	return v.priceIsBetweenMinAndMax(quote) && v.isTrendingUpToday(quote) && v.hasMinimumGrowthPotential(quote)
+	return v.priceIsBetweenMinAndMax(quote) && v.isTrendingUp(quote) && v.hasMinimumGrowthPotential(quote)
 }
 
 func (v Validator) priceIsBetweenMinAndMax(quote *finance.Quote) bool {
 	return quote.RegularMarketPrice > v.minPrice && quote.RegularMarketPrice <= v.maxPrice
 }
 
-func (v Validator) isTrendingUpToday(quote *finance.Quote) bool {
-	return quote.RegularMarketPreviousClose < quote.RegularMarketPrice
+func (v Validator) isTrendingUp(quote *finance.Quote) bool {
+	return quote.RegularMarketPreviousClose < quote.RegularMarketPrice && quote.RegularMarketPrice > quote.FiftyDayAverage
 }
 
 func (v Validator) hasMinimumGrowthPotential(quote *finance.Quote) bool {
