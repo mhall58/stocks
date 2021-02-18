@@ -4,17 +4,12 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
-	"github.com/piquette/finance-go"
 	"github.com/piquette/finance-go/quote"
 	"log"
 	"os"
-	"sort"
 )
 
-type Result struct {
-	quote              *finance.Quote
-	hypotheticalGrowth float64
-}
+
 
 func main() {
 
@@ -32,7 +27,7 @@ func main() {
 		minGrowth: minGrowth,
 	}
 
-	var results []Result
+	var results Results
 
 	for _, chunk := range symbolChunks {
 		quotes := quote.List(chunk)
@@ -44,45 +39,21 @@ func main() {
 				break
 			}
 
-			q := quotes.Quote()
+			quote := quotes.Quote()
 
-			if q == nil {
+			if quote == nil {
 				continue
 			}
 
-			if stockValidator.isValid(q) {
-				results = append(results, Result{
-					quote:              q,
-					hypotheticalGrowth: stockValidator.GetGrowthPotential(q),
-				})
+			if stockValidator.isValid(quote) {
+				results = append(results, Result{}.New(quote))
 			}
 
 		}
 
 	}
 
-	// sort descending
-	sort.Slice(results, func(i, j int) bool {
-		return results[i].hypotheticalGrowth > results[j].hypotheticalGrowth
-	})
-
-	report := ""
-
-	for i, v := range results {
-		if i == 10 {
-			break
-		}
-
-		report = report + fmt.Sprintf(
-			"SYMBOL: %s, Price: %f, 52W-High: %f, Hypthetical Growth %f \n",
-			v.quote.Symbol,
-			v.quote.RegularMarketPrice,
-			v.quote.FiftyTwoWeekHigh,
-			v.hypotheticalGrowth,
-		)
-
-	}
-
+	report := results.sortByPGrowth().asString(10)
 	fmt.Println(report)
 
 	err := godotenv.Load()

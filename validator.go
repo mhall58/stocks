@@ -21,9 +21,5 @@ func (v Validator) isTrendingUpToday(quote *finance.Quote) bool {
 }
 
 func (v Validator) hasMinimumGrowthPotential(quote *finance.Quote) bool {
-	return v.GetGrowthPotential(quote) >= v.minGrowth
-}
-
-func (v Validator) GetGrowthPotential(quote *finance.Quote)float64 {
-	return (quote.FiftyTwoWeekHigh - quote.RegularMarketPrice) / quote.FiftyTwoWeekHigh
+	return Result{}.getPotentialGrowth(quote) >= v.minGrowth
 }
