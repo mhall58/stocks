@@ -3,8 +3,8 @@ package main
 import "github.com/piquette/finance-go"
 
 type Validator struct {
-	minPrice float64
-	maxPrice float64
+	minPrice  float64
+	maxPrice  float64
 	minGrowth float64
 }
 

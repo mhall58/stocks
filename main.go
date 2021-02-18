@@ -9,57 +9,34 @@ import (
 	"os"
 )
 
-
-
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
-	//todo make these configurable
-	maxPrice := 5.0
-	minPrice := .01
-	minGrowth := .10
-	chunkSize := 500
-
-	symbolChunks := Symbols{}.getSymbolChunks(chunkSize)
+	symbolChunks := Symbols{}.getSymbolChunks(500)
 
 	stockValidator := Validator{
-		minPrice:  minPrice,
-		maxPrice:  maxPrice,
-		minGrowth: minGrowth,
+		minPrice:  .01, // 10 cents
+		maxPrice:  5.0, // $5
+		minGrowth: .10, // 10 percent
 	}
 
 	var results Results
 
 	for _, chunk := range symbolChunks {
 		quotes := quote.List(chunk)
-
-		for i := 0; i <= quotes.Count(); i++ {
-			quotes.Next()
-
-			if quotes.Err() != nil {
-				break
+		for quotes.Next() {
+			q := quotes.Quote()
+			if stockValidator.isValid(q) {
+				results = append(results, Result{}.New(q))
 			}
-
-			quote := quotes.Quote()
-
-			if quote == nil {
-				continue
-			}
-
-			if stockValidator.isValid(quote) {
-				results = append(results, Result{}.New(quote))
-			}
-
 		}
-
 	}
 
 	report := results.sortByPGrowth().asString(10)
 	fmt.Println(report)
-
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	if os.Getenv("DISCORD_BOT_TOKEN") != "" {
 		dg, _ := discordgo.New("Bot " + os.Getenv("DISCORD_BOT_TOKEN"))
