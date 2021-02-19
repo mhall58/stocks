@@ -7,9 +7,9 @@ import (
 )
 
 type TradedCompanies struct {
-	Company string `json:"name"`
-	Symbol  string `json:"ticker"`
-	Exchange  string `json:"exchange"`
+	Company  string `json:"name"`
+	Symbol   string `json:"ticker"`
+	Exchange string `json:"exchange"`
 }
 
 type Symbols struct {
@@ -44,7 +44,7 @@ func (s Symbols) getSymbols() []string {
 
 func (Symbols) getCompanies() []TradedCompanies {
 	var companies []TradedCompanies
-	resp,_ := http.Get("https://dumbstockapi.com/stock?exchange=AMEX,NASDAQ,NYSE")
+	resp, _ := http.Get("https://dumbstockapi.com/stock?exchange=AMEX,NASDAQ,NYSE")
 
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)

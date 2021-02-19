@@ -27,5 +27,3 @@ func (v Validator) hasMinimumGrowthPotential(quote *finance.Quote) bool {
 func (v Validator) hasValidExchange(quote *finance.Quote) bool {
 	return quote.FullExchangeName != "Other OTC"
 }
-
-
