@@ -32,10 +32,11 @@ func (r Result) getSellPrice(quote *finance.Quote) float64 {
 
 func (r Result) asString() string {
 	return fmt.Sprintf(
-		"Buy %s at $%.2f per share and limit sell it for $%.2f \n",
+		"%s is $%.2f per share and we may sell it for $%.2f (%v) \n",
 		r.quote.Symbol,
 		r.quote.RegularMarketPrice,
 		r.sellPrice,
+		r.quote.FullExchangeName,
 	)
 }
 

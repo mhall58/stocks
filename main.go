@@ -49,7 +49,7 @@ func getStockTips() (string, error) {
 		}
 	}
 
-	report := results.sortByPGrowth().asString(20)
+	report := results.sortByPGrowth().asString(10)
 
 	return report, nil
 }

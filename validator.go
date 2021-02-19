@@ -9,7 +9,7 @@ type Validator struct {
 }
 
 func (v Validator) isValid(quote *finance.Quote) bool {
-	return v.priceIsBetweenMinAndMax(quote) && v.isTrendingUp(quote) && v.hasMinimumGrowthPotential(quote)
+	return v.hasValidExchange(quote) && v.priceIsBetweenMinAndMax(quote) && v.isTrendingUp(quote) && v.hasMinimumGrowthPotential(quote)
 }
 
 func (v Validator) priceIsBetweenMinAndMax(quote *finance.Quote) bool {
@@ -23,3 +23,9 @@ func (v Validator) isTrendingUp(quote *finance.Quote) bool {
 func (v Validator) hasMinimumGrowthPotential(quote *finance.Quote) bool {
 	return Result{}.getPotentialGrowth(quote) >= v.minGrowth
 }
+
+func (v Validator) hasValidExchange(quote *finance.Quote) bool {
+	return quote.FullExchangeName != "Other OTC"
+}
+
+
